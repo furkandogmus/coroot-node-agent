@@ -121,6 +121,11 @@ var (
 		"IP address assigned to the interface",
 		[]string{"interface", "ip"}, nil,
 	)
+	libvirtDomainMemoryStatUsedPercentDesc = prometheus.NewDesc(
+		prometheus.BuildFQName("libvirt", "domain_memory_stats", "used_percent"),
+		"The amount of memory in percent, that used by domain.",
+		[]string{"domain"},
+		nil)
 )
 
 type MemoryStat struct {
@@ -162,8 +167,27 @@ func NewCollector(hostname, kernelVersion string) *Collector {
 	}
 }
 
+func NewLibvirtExporter(uri string) (*LibvirtExporter, error) {
+	return &LibvirtExporter{
+		uri: uri,
+	}, nil
+}
+
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	ch <- gauge(infoDesc, 1, c.hostname, c.kernelVersion)
+
+	exporter, err := NewLibvirtExporter(*libvirtURI)
+	if err != nil {
+		panic(err)
+	}
+
+	var usedPercent float64
+	usedPercent = (float64(10) - float64(2)) / (float64(5) / float64(100))
+	ch <- prometheus.MustNewConstMetric(
+		libvirtDomainMemoryStatUsedPercentDesc,
+		prometheus.GaugeValue,
+		float64(usedPercent),
+		"Benim metrikim")
 
 	v, err := uptime(procRoot)
 	if err != nil {
