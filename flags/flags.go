@@ -13,6 +13,7 @@ var (
 	DisableLogParsing = kingpin.Flag("disable-log-parsing", "Disable container log parsing").Default("false").Envar("DISABLE_LOG_PARSING").Bool()
 	DisablePinger     = kingpin.Flag("disable-pinger", "Don't ping upstreams").Default("false").Envar("DISABLE_PINGER").Bool()
 	DisableL7Tracing  = kingpin.Flag("disable-l7-tracing", "Disable L7 tracing").Default("false").Envar("DISABLE_L7_TRACING").Bool()
+	LibvirtURI        = kingpin.Flag("libvirt.uri", "Libvirt URI from which to extract metrics.").Default("qemu:///system").Envar("LIBVIRT_URI").String()
 
 	ExternalNetworksWhitelist = kingpin.
 					Flag("track-public-network", "Allow track connections to the specified IP networks, all private networks are allowed by default (e.g., Y.Y.Y.Y/mask)").
